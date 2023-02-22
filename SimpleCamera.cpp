@@ -12,7 +12,7 @@ Camera::Camera(glm::vec4 viewPort) :
 	, position(0, 0, 0)
 	, zoom(1.0f), movementSpeed(5.0f), mouseSensitivity(0.1f)
 	, pitch(0.0f), yaw(-90.0f)
-	, nearPlane(-1.0f), farPlane(1.0f)
+	, nearPlane(-50.0f), farPlane(50.0f)
 	, nP_perspective(0.01f), fP_perspective(200.0f)
 	, nP_Ortho(-1000.0f), fp_Ortho(10000.0f)
 	, isOrtho(true), readingInput(false), firstMouse(true), enabled(true), rightMouseDown(false)
@@ -41,8 +41,8 @@ void Camera::Reset()
 	this->isNDCOnly = false;
 	this->mousePoint = glm::vec2(0.0f);
 
-	this->nearPlane = -1.0f;
-	this->farPlane = 1.0f;
+	this->nearPlane = -51.0f;
+	this->farPlane = 51.0f;
 	this->updateCamVectors();
 }
 

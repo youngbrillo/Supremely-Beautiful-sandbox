@@ -20,17 +20,17 @@ void ResourceManager::startup()
 	//ResourceManager::LoadTexture("./assets/Ammo.png", true, "Ammo");
 	ResourceManager::LoadTexture("./assets/brick.png", true, "icon", GL_LINEAR, GL_LINEAR);
 
-	ResourceManager::LoadTexture("./assets/sb/a00.png", true, "astroid1");
-	ResourceManager::LoadTexture("./assets/sb/a01.png", true, "astroid2");
-	ResourceManager::LoadTexture("./assets/sb/a02.png", true, "astroid3");
-	ResourceManager::LoadTexture("./assets/sb/a03.png", true, "astroid4");
-	ResourceManager::LoadTexture("./assets/sb/a04.png", true, "astroid5");
-	ResourceManager::LoadTexture("./assets/sb/s01.png", true, "ship");
+	//ResourceManager::LoadTexture("./assets/sb/a00.png", true, "astroid1");
+	//ResourceManager::LoadTexture("./assets/sb/a01.png", true, "astroid2");
+	//ResourceManager::LoadTexture("./assets/sb/a02.png", true, "astroid3");
+	//ResourceManager::LoadTexture("./assets/sb/a03.png", true, "astroid4");
+	//ResourceManager::LoadTexture("./assets/sb/a04.png", true, "astroid5");
+	//ResourceManager::LoadTexture("./assets/sb/s01.png", true, "ship");
 
-	ResourceManager::LoadTexture("./assets/effects/health02.png", true, "healthred");
-	ResourceManager::LoadTexture("./assets/effects/health01.png", true, "healthgreen");
-	ResourceManager::LoadTexture("./assets/effects/accel.png", true, "accelIcon");
-	ResourceManager::LoadTexture("./assets/effects/spread.png", true, "spreadIcon");
+	//ResourceManager::LoadTexture("./assets/effects/health02.png", true, "healthred");
+	//ResourceManager::LoadTexture("./assets/effects/health01.png", true, "healthgreen");
+	//ResourceManager::LoadTexture("./assets/effects/accel.png", true, "accelIcon");
+	//ResourceManager::LoadTexture("./assets/effects/spread.png", true, "spreadIcon");
 	ResourceManager::LoadTexture("./assets/blankpixel.png", true, "default");
 
 	ranStartup = true;

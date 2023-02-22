@@ -2,6 +2,11 @@
 #include "Texture.h"
 void Model::Draw(Shader* shader)
 {
+
+	shader->Use()
+		.SetMatrix4("model", transform.m_model)
+		.SetColor("color", color);
+
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].Draw(shader);
@@ -53,9 +58,13 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		vertex.Position.y = mesh->mVertices[i].y;
 		vertex.Position.z = mesh->mVertices[i].z;
 
-		vertex.Normal.x = mesh->mNormals[i].x;
-		vertex.Normal.y = mesh->mNormals[i].y;
-		vertex.Normal.z = mesh->mNormals[i].z;
+		if (mesh->HasNormals())
+		{
+			vertex.Normal.x = mesh->mNormals[i].x;
+			vertex.Normal.y = mesh->mNormals[i].y;
+			vertex.Normal.z = mesh->mNormals[i].z;
+		}
+
 		if (mesh->mTextureCoords[0]) {
 			vertex.TextureCoords.x = mesh->mTextureCoords[0][i].x;
 			vertex.TextureCoords.y = mesh->mTextureCoords[0][i].y;
@@ -116,4 +125,28 @@ std::vector<vTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType
 		}
 	}
 	return textures;
+}
+
+
+#include <imgui.h>
+void Model::Debug()
+{
+	if (ImGui::TreeNode("Model"))
+	{
+		ImGui::ColorEdit4("color", &color.x, ImGuiColorEditFlags_::ImGuiColorEditFlags_Float);
+		transform.Debug("Model.Transform");
+
+		if (ImGui::TreeNode("Model.Textures"))
+		{
+			for (auto ii : meshes)
+			{
+				for (auto i : ii.textures) {
+					ImGui::Text("Type: "); ImGui::SameLine(); ImGui::Text(i.type.c_str());
+					ImGui::Text("path: "); ImGui::SameLine(); ImGui::Text(i.path.c_str());
+				}
+			}
+			ImGui::TreePop();
+		}
+		ImGui::TreePop();
+	}
 }

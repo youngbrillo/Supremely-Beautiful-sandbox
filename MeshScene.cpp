@@ -3,6 +3,7 @@
 
 #include "GameObject_UI.h"
 #include <vector>
+#include "Model.h"
 
 class MeshScene : public Scene
 {
@@ -10,6 +11,7 @@ private:
 	TextRenderer tex;
 	Shader* canvasShader;
 	std::vector<GameObject*>canvasObjects;
+	Model* m_Model;
 public:
 	MeshScene() : Scene()
 	{
@@ -18,7 +20,11 @@ public:
 		canvasShader = new Shader("./Shaders/UIShader.vert", "./Shaders/SimpleColor.frag");
 		canvasShader->Use().SetMatrix4("projection", projection);
 
-
+		
+		m_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model00.frag");
+		m_Model = new Model("./assets/models/spider.obj");
+		m_Model->transform.pivot = glm::vec3(0.0f);
+		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f, 0.5f);
 		//ui objects
 		{
 			GameObjectDefinition def;
@@ -31,11 +37,12 @@ public:
 			canvasObjects.emplace_back(new GameObject_UI(&def, &tex));
 		}
 
-
 	}
 	~MeshScene()
 	{
 		for (auto g : canvasObjects) { delete g; g = nullptr; }
+
+		delete m_Model;
 	}
 
 public: //frame updates
@@ -54,6 +61,7 @@ public: //handle Inputs
 public: //rendering
 	virtual void DrawSceneBackground() override
 	{
+		m_Model->Draw(m_shader);
 	};
 	virtual void DrawSceneForeground() override
 	{
@@ -63,6 +71,13 @@ public: //rendering
 	int surfaceIndex = 3, textureIndex = 0;
 	virtual void DrawDebug() override
 	{
+		if (ImGui::Button("Hot Reload Shader"))
+		{
+			delete m_shader;
+			m_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model00.frag");
+		}
+		m_Model->Debug();
+
 		tex.Debug();
 		ImGui::Separator();
 		for (auto i : canvasObjects) i->Debug();

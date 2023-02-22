@@ -49,6 +49,12 @@
     <Filter Include="Scenes\primative Scenes">
       <UniqueIdentifier>{8663de7d-7d4f-4e7c-82b5-73bc89f57cf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Models">
+      <UniqueIdentifier>{1096d6ef-48b8-48ad-aa6a-1711d903ad9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Basic">
+      <UniqueIdentifier>{a37bffb9-02a8-4a13-8abd-84f2b7b33db9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -241,16 +247,22 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\SimpleColor.frag">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Basic</Filter>
     </None>
     <None Include="Shaders\textShader.frag">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Basic</Filter>
     </None>
     <None Include="Shaders\textShader.vertex">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Basic</Filter>
     </None>
     <None Include="Shaders\UIShader.vert">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Basic</Filter>
+    </None>
+    <None Include="Shaders\Model00.vert">
+      <Filter>Shaders\Models</Filter>
+    </None>
+    <None Include="Shaders\Model00.frag">
+      <Filter>Shaders\Models</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -20,7 +20,6 @@ class Mesh
 public:
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<vTexture> textures);
 	void Draw(Shader* shader);
-	std::string directory;
 public:
 	std::vector<Vertex>			vertices;
 	std::vector<unsigned int>	indices;
@@ -29,5 +28,7 @@ public:
 private: //render data
 	unsigned int VAO, VBO, EBO;
 	void setupMesh();
+public:
+	std::string directory;
 };
 
