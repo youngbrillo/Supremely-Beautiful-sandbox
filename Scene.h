@@ -12,8 +12,8 @@ public:
 	virtual ~Scene();
 	
 public: //frame updates
-	virtual void Update(float deltaTime) = 0;
-	virtual void FixedUpdate(float deltaTime) = 0;
+	virtual void Update(float deltaTime) {};
+	virtual void FixedUpdate(float deltaTime) {};
 public: //rendering
 	void DrawTitle();
 	void Draw();
@@ -21,13 +21,13 @@ public: //rendering
 	virtual void DrawSceneBackground() {};
 	virtual void DrawDebug();
 public: //handle Inputs
-	virtual void onKeyPress(int key) = 0;
-	virtual void onKeyRelease(int key) = 0;
-	virtual void onKeyPressContinuous(int key) = 0;
-	virtual void onMouseKeyCallBack(int mouseButton, int action, int mode) = 0;
-	virtual void onMouseCursorCallback(double xPos, double yPos) = 0;
-	virtual void onMouseScrollCallback(double xOffset, double yOffset) = 0;
-	virtual void onWindowResize(int newWidth, int newHeight) = 0;
+	virtual void onKeyPress(int key) {};
+	virtual void onKeyRelease(int key) {};
+	virtual void onKeyPressContinuous(int key){};
+	virtual void onMouseKeyCallBack(int mouseButton, int action, int mode) {};
+	virtual void onMouseCursorCallback(double xPos, double yPos) {};
+	virtual void onMouseScrollCallback(double xOffset, double yOffset) {};
+	virtual void onWindowResize(int newWidth, int newHeight) {};
 public: //physics
 protected:
 	Shader* m_shader;

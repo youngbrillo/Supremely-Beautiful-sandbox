@@ -32,4 +32,6 @@ private:
 
 void GenerateTexture(const char* path, bool alphaChannel, unsigned int& textureId, int& _width, int& _height, int& numOfChannels, int expectedChannels = 0);
 
+unsigned int TextureIdFromFile(const char* path, const char* directory);
+
 #endif // !SPRITE_H

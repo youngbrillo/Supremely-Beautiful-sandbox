@@ -14,7 +14,7 @@ GameObject::GameObject()
 	, deleteFlag(false)
 {
 	id = instances++;
-	transform.position.z = -0.9;
+	//transform.position.z = -0.9;
 	transform.UpdateMatrix();
 }
 
@@ -29,7 +29,7 @@ GameObject::GameObject(GameObjectDefinition* definition, Callback* _update)
 	, updateCallback(_update)
 {
 	id = instances++;
-	transform.position.z = -0.9;
+	//transform.position.z = -0.9;
 	transform.UpdateMatrix();
 }
 
