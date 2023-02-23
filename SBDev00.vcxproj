@@ -198,8 +198,11 @@
   <ItemGroup>
     <Image Include="assets\blankpixel.png" />
     <Image Include="assets\brick.png" />
+    <Image Include="assets\models\SpiderTex.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\models\Michelle.fbx" />
+    <None Include="assets\models\spider.mtl" />
     <None Include="Shaders\Model00.frag" />
     <None Include="Shaders\Model00.vert" />
     <None Include="Shaders\MVP.vert" />

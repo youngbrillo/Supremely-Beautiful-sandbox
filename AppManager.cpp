@@ -58,7 +58,7 @@ void App::Initialize()
 
 	if (g_SceneCount)
 	{
-		m_scene = g_Scenes[sceneIndex].creationFunc();
+		//m_scene = g_Scenes[sceneIndex].creationFunc();
 		restartScene();
 	}
 }

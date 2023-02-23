@@ -209,8 +209,9 @@ void GenerateTexture(const char* path, bool alphaChannel, unsigned int& textureI
 unsigned int TextureIdFromFile(const char* path, const char* directory)
 {
 
-	std::string filename = std::string(path);
-	filename = directory + '/' + filename;
+	std::string filename = directory;
+	filename += "/";
+	filename += path;
 
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
@@ -240,7 +241,7 @@ unsigned int TextureIdFromFile(const char* path, const char* directory)
 	}
 	else
 	{
-		printf("Texture failed to load at path: %s\n", path);
+		printf("Texture.cpp::\tTexture failed to load at path: %s (%s)'%s'\n", filename.c_str(), directory, path);
 		stbi_image_free(data);
 	}
 

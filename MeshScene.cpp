@@ -22,9 +22,19 @@ public:
 
 		
 		m_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model00.frag");
-		m_Model = new Model("./assets/models/spider.obj");
+		m_Model = new Model("./assets/models/spider/spider.obj");
+		//m_Model = new Model("./assets/models/WusonOBJ.obj");
+		//m_Model = new Model("./assets/models/Irvine/Irvine.obj");
+		//m_Model = new Model("./assets/models/Pine/Pine.fbx");
+		//m_Model = new Model("./assets/models/backpack/Survival_BackPack_2.fbx");
+		//m_Model = new Model("./assets/models/Michelle.fbx");
+		m_Model = new Model("./assets/models/hero/hero_Tpose.obj");
+
+		
 		m_Model->transform.pivot = glm::vec3(0.0f);
-		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f, 0.5f);
+		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f,0.0f);
+		//m_Model->transform.scale = 0.5f;
+		m_Model->transform.UpdateMatrix();
 		//ui objects
 		{
 			GameObjectDefinition def;
@@ -36,6 +46,7 @@ public:
 			def.ui_Text = "Import Mesh's and Render them to the screen";
 			canvasObjects.emplace_back(new GameObject_UI(&def, &tex));
 		}
+		App::MainCamera->zoom = 2.6f;
 
 	}
 	~MeshScene()
@@ -84,7 +95,7 @@ public: //rendering
 
 
 	}
-	bool linesEnabled = false;
+	bool linesEnabled = false, cullface = false;
 	void onKeyPress(int key) override
 	{
 		if (key == GLFW_KEY_TAB)
@@ -94,6 +105,17 @@ public: //rendering
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			else
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+
+		if (key == GLFW_KEY_Q)
+		{
+			cullface = !cullface;
+			if (cullface)
+				glEnable(GL_CULL_FACE);
+			else
+				glDisable(GL_CULL_FACE);
+
 		}
 	};
 

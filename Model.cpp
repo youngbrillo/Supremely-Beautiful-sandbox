@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Texture.h"
+#include "ResourceManager.h"
 void Model::Draw(Shader* shader)
 {
 
@@ -11,6 +12,7 @@ void Model::Draw(Shader* shader)
 	{
 		meshes[i].Draw(shader);
 	}
+
 }
 
 void Model::LoadModel(std::string path)
@@ -26,6 +28,7 @@ void Model::LoadModel(std::string path)
 	directory = path.substr(0, path.find_last_of('/'));
 
 	processNode(scene->mRootNode, scene);
+	printf("Loaded Model %s\n", path.c_str());
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)
@@ -99,7 +102,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 std::vector<vTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
 	std::vector<vTexture> textures;
-	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+	unsigned int textureCount = mat->GetTextureCount(type);
+	for (unsigned int i = 0; i < textureCount; i++)
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
@@ -124,6 +128,21 @@ std::vector<vTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType
 			textures_loaded.push_back(texture); // add to loaded textures
 		}
 	}
+	if ( (type == aiTextureType::aiTextureType_DIFFUSE || typeName == "texture_diffuse") && textureCount == 0U && textures.size() < 1)
+	{
+		//mesh has no difuse textures, and i don't want to make a special shader for it so
+		printf("Add a blank texture here! %s\n", typeName.c_str());
+
+
+		vTexture texture;
+		texture.id = ResourceManager::GetTexture("default")->GetId();
+		texture.type = typeName;
+		texture.path = "- Not Applicable -";
+		textures.push_back(texture);
+		textures_loaded.push_back(texture); // add to loaded textures
+	}
+	//printf("Number of %s Textures: %d\n", typeName.c_str(), textureCount);
+
 	return textures;
 }
 
