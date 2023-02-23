@@ -16,38 +16,36 @@ public:
 	Camera(glm::vec4 viewPort);
 	virtual ~Camera();
 
-
-	glm::mat4 GetViewMatrix();
-	glm::mat4 getProjectionMatrix();
-	glm::vec2 GetScreenExtents();
-	void mouseCallback(GLFWwindow* window, int button, int action, int mode);
-	void mouseCallback_Cursor(GLFWwindow* w, double x, double y);
-	void mouseScroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+	virtual glm::mat4 GetViewMatrix();
+	virtual glm::mat4 getProjectionMatrix();
+	virtual glm::vec2 GetScreenExtents();
+	virtual void mouseCallback(GLFWwindow* window, int button, int action, int mode);
+	virtual void mouseCallback_Cursor(GLFWwindow* w, double x, double y);
+	virtual void mouseScroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 	void debug();
-	void Reset();
-	void updateCamVectors();
+	void Update(float dt) { onUpdate(dt); };
+
+	virtual void Reset();
+	virtual void updateCamVectors();
 protected:
-	glm::mat4 CalculateView();
-	glm::mat4 CalculateProjection();
+	virtual void debugInner();
+	virtual void onUpdate(float dt) {}
+	virtual glm::mat4 CalculateView();
+	virtual glm::mat4 CalculateProjection();
 
 public:
-	glm::vec2 convertScreenToWorld(const glm::vec2& mousePos);
+	bool Keys[1024];
+	virtual glm::vec2 convertScreenToWorld(const glm::vec2& mousePos);
 	int Width, Height; //width and height of screen
 public:
-	glm::vec3	position,
-		right, up, front;
+	glm::vec3 position, right, up, front;
 	float zoom;
 protected:
-	glm::vec2 screenCenter, mousePoint;
-	float	  pitch, yaw, movementSpeed, mouseSensitivity
-		, nearPlane, farPlane
-		, nP_perspective, fP_perspective
-		, nP_Ortho, fp_Ortho
-		;
+	glm::vec2 screenCenter, mousePoint, mousePointSS;
+	float nearPlane, farPlane ;
 
-	bool	  readingInput, firstMouse, enabled, rightMouseDown
-		, isStatic, isOrtho, isNDCOnly;
+	bool rightMouseDown, leftMouseDown;
 
 	glm::mat4 view, projection;
 

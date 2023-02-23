@@ -141,7 +141,19 @@
     <ClCompile Include="MeshScene.cpp">
       <Filter>Scenes\primative Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="PerspectiveCamera.cpp">
+      <Filter>Source Files\Cameras</Filter>
+    </ClCompile>
     <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="PerspectiveCameraScene.cpp">
+      <Filter>Scenes\primative Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCamScene.cpp">
+      <Filter>Scenes\primative Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSCam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -233,6 +245,12 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PerspectiveCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSCam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\blankpixel.png">
@@ -240,6 +258,9 @@
     </Image>
     <Image Include="assets\brick.png">
       <Filter>Assets</Filter>
+    </Image>
+    <Image Include="assets\models\SpiderTex.jpg">
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +284,13 @@
     </None>
     <None Include="Shaders\Model00.frag">
       <Filter>Shaders\Models</Filter>
+    </None>
+    <None Include="assets\models\Michelle.fbx" />
+    <None Include="assets\models\spider.mtl">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Shaders\SimpleColor2.frag">
+      <Filter>Shaders\Basic</Filter>
     </None>
   </ItemGroup>
 </Project>

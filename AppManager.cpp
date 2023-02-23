@@ -13,7 +13,6 @@ App::App(unsigned int width, unsigned int height, GLFWwindow* currentWindow)
 	, timeSinceLastFrame(0.0f)
 	, timeSinceLastFrame_Target(1.0f / 60.0f)
 	, m_scene(nullptr)
-	, m_Camera(nullptr)
 	, shouldExit(false)
 	, mainWindow(currentWindow)
 	, sceneIndex(0)
@@ -21,8 +20,7 @@ App::App(unsigned int width, unsigned int height, GLFWwindow* currentWindow)
 	, screenWidth(width), screenHeight(height)
 	, state(AppState::App_running)
 {
-	m_Camera = new Camera(glm::vec4(0, 0, width, height));
-	MainCamera = m_Camera;
+	MainCamera = new Camera(glm::vec4(0, 0, width, height));
 	g_App = this;
 
 	ResourceManager::startup();
@@ -34,8 +32,8 @@ App::App(unsigned int width, unsigned int height, GLFWwindow* currentWindow)
 App::~App()
 {
 	g_App = nullptr;
+	delete MainCamera;
 	MainCamera = nullptr;
-	delete m_Camera;
 
 	ResourceManager::cleanup();
 
@@ -80,6 +78,7 @@ void App::FixedUpdate(float deltaTime)
 
 void App::Update(float deltaTime)
 {
+	MainCamera->Update(deltaTime);
 	if (state == AppState::App_paused) return;
 	timeSinceLastFrame += deltaTime;
 
@@ -92,6 +91,7 @@ void App::Update(float deltaTime)
 
 
 	if (m_scene) m_scene->Update(deltaTime);
+
 }
 
 void App::Render()
@@ -190,13 +190,14 @@ void App::KeyCallBack(GLFWwindow* win, int key, int scancode, int action, int mo
 void App::SetKey(int key, bool isPressed)
 {
 	Keys[key] = isPressed;
+	MainCamera->Keys[key] = isPressed;
 }
 
 void App::DebugRender()
 {
 #if true
 	{
-		ImGui::Begin("Code Switch Debug");//, & showUI, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("App Debug");//, & showUI, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 
 
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -271,7 +272,7 @@ void App::DebugRender()
 				ImGui::EndTabItem();
 			}
 
-			m_Camera->debug();
+			MainCamera->debug();
 			RenderSceneSelection();
 			ImGui::EndTabBar();
 		}
@@ -345,7 +346,7 @@ void App::restartScene()
 	printf("Starting Scene %d: '%s'\n", sceneIndex, g_Scenes[sceneIndex].name);
 	if(m_scene)
 		delete m_scene;
-	m_Camera->Reset();
+	MainCamera->Reset();
 	m_scene = g_Scenes[sceneIndex].creationFunc();
 	m_settings->m_index = sceneIndex;
 	state = AppState::App_running;

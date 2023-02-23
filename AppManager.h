@@ -54,7 +54,6 @@ public:
 private:
 	float timeSinceLastFrame,timeSinceLastFrame_Target;
 	Scene* m_scene;
-	Camera* m_Camera;
 	bool shouldExit;
 	GLFWwindow* mainWindow;
 	int sceneIndex;
@@ -69,5 +68,6 @@ private: //debug
 public: 
 	static Camera* MainCamera;
 	static FileIO::SettingsFile* m_settings;
+	static GLFWwindow* GetWindow() { if (g_App) { return g_App->mainWindow; } return nullptr; }
 };
 

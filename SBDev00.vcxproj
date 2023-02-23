@@ -137,6 +137,7 @@
     <ClCompile Include="AppManager.cpp" />
     <ClCompile Include="FileData.cpp" />
     <ClCompile Include="FileIOoperations.cpp" />
+    <ClCompile Include="FPSCam.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObject_UI.cpp" />
     <ClCompile Include="glad.c" />
@@ -150,6 +151,8 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshScene.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="PerspectiveCamera.cpp" />
+    <ClCompile Include="PerspectiveCameraScene.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -160,6 +163,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="surface2.cpp" />
     <ClCompile Include="TemplateScene.cpp" />
+    <ClCompile Include="TestCamScene.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -169,6 +173,7 @@
     <ClInclude Include="Callback.h" />
     <ClInclude Include="FileData.h" />
     <ClInclude Include="FileIOoperations.h" />
+    <ClInclude Include="FPSCam.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObject_UI.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -183,6 +188,7 @@
     <ClInclude Include="linmath.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="PerspectiveCamera.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="sajson.h" />
     <ClInclude Include="Scene.h" />
@@ -207,6 +213,7 @@
     <None Include="Shaders\Model00.vert" />
     <None Include="Shaders\MVP.vert" />
     <None Include="Shaders\SimpleColor.frag" />
+    <None Include="Shaders\SimpleColor2.frag" />
     <None Include="Shaders\textShader.frag" />
     <None Include="Shaders\textShader.vertex" />
     <None Include="Shaders\UIShader.vert" />

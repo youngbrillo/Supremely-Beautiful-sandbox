@@ -27,8 +27,8 @@ public:
 		//m_Model = new Model("./assets/models/Irvine/Irvine.obj");
 		//m_Model = new Model("./assets/models/Pine/Pine.fbx");
 		//m_Model = new Model("./assets/models/backpack/Survival_BackPack_2.fbx");
-		m_Model = new Model("./assets/models/Michelle.fbx");
-		//m_Model = new Model("./assets/models/hero/hero_Tpose.obj");
+		//m_Model = new Model("./assets/models/Michelle.fbx");
+		m_Model = new Model("./assets/models/hero/hero.obj");
 
 		
 		m_Model->transform.pivot = glm::vec3(0.0f);

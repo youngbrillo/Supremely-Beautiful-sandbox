@@ -16,7 +16,7 @@ public: //frame updates
 	virtual void FixedUpdate(float deltaTime) {};
 public: //rendering
 	void DrawTitle();
-	void Draw();
+	virtual void Draw();
 	virtual void DrawSceneForeground() {};
 	virtual void DrawSceneBackground() {};
 	virtual void DrawDebug();

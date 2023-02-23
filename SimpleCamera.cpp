@@ -10,18 +10,14 @@ Camera::Camera(glm::vec4 viewPort) :
 	Width((int)viewPort.z), Height((int)viewPort.w)
 	, screenCenter(viewPort.z / 2, viewPort.w / 2)
 	, position(0, 0, 0)
-	, zoom(1.0f), movementSpeed(5.0f), mouseSensitivity(0.1f)
-	, pitch(0.0f), yaw(-90.0f)
+	, zoom(1.0f)
 	, nearPlane(-50.0f), farPlane(50.0f)
-	, nP_perspective(0.01f), fP_perspective(200.0f)
-	, nP_Ortho(-1000.0f), fp_Ortho(10000.0f)
-	, isOrtho(true), readingInput(false), firstMouse(true), enabled(true), rightMouseDown(false)
-	, isStatic(false)
-	, isNDCOnly(false)
-	, mousePoint(0.0f)
+	, rightMouseDown(false), leftMouseDown(false)
+	, mousePoint(0.0f), mousePointSS(0.0f)
 	, right(1.0f, 0, 0)
 	, up(0, 1, 0)
 	, front(0, 0, -1)
+	, Keys()
 {
 	//printf("Camera.cpp::Camera():: initializing Camera (%d x %d)\n", Width, Height);
 	CalculateProjection();
@@ -33,14 +29,9 @@ void Camera::Reset()
 {
 	this->front = glm::vec3(0.0f, 0.0f, -1.0f);
 	this->position = glm::vec3(0, 0, 0);
-	this->yaw = -90.0f;
-	this->pitch = 0.0f;
 	this->zoom = 1.0f;
-	this->isOrtho = true;
-	this->isStatic = false;
-	this->isNDCOnly = false;
 	this->mousePoint = glm::vec2(0.0f);
-
+	mousePointSS = mousePoint;
 	this->nearPlane = -51.0f;
 	this->farPlane = 51.0f;
 	this->updateCamVectors();
@@ -52,20 +43,11 @@ Camera::~Camera()
 
 glm::mat4 Camera::GetViewMatrix()
 {
-	if (isNDCOnly) return glm::mat4(1);
-
-	if (isStatic) {
-		return view;
-	}
 	return CalculateView();
 }
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-	if (isNDCOnly) return glm::mat4(1);
-	if (isStatic) {
-		return projection;
-	}
 	return CalculateProjection();
 }
 
@@ -88,7 +70,6 @@ void Camera::mouseCallback(GLFWwindow* window, int button, int action, int mode)
 	glfwGetCursorPos(window, &xd, &yd);
 	glm::vec2 ps((float)xd, (float)yd);
 	glm::vec2 rcmp = ps;
-
 	if (button == GLFW_MOUSE_BUTTON_2)
 	{
 		if (action == GLFW_PRESS)
@@ -103,10 +84,22 @@ void Camera::mouseCallback(GLFWwindow* window, int button, int action, int mode)
 			rightMouseDown = false;
 		}
 	}
+	if (button == GLFW_MOUSE_BUTTON_1)
+	{
+		if (action == GLFW_PRESS)
+		{
+			leftMouseDown = true;
+		}
+		if (action == GLFW_RELEASE)
+		{
+			leftMouseDown = false;
+		}
+	}
 }
 
 void Camera::mouseCallback_Cursor(GLFWwindow* w, double x, double y)
 {
+	mousePointSS = glm::vec2(x, y);
 
 
 	if (rightMouseDown)
@@ -214,49 +207,27 @@ void Camera::debug()
 	//if (ImGui::TreeNode("Camera"))
 	if (ImGui::BeginTabItem("Camera"))
 	{
-		ImGui::Checkbox("static Cam", &isStatic);
-		ImGui::Checkbox("NDC cam", &isNDCOnly);
-		ImGui::Checkbox("right mouse btn down", &rightMouseDown);
-		ImGui::Checkbox("reading input", &readingInput);
-
-
-		ImGui::SliderFloat3("cam Pos", &position.x, -25, 25);
-		ImGui::SliderFloat3("front", &front.x, -1, 1);
-		ImGui::SliderFloat3("up", &up.x, -1, 1);
-		ImGui::SliderFloat3("right", &right.x, -1, 1);
-
-
-		ImGui::SliderFloat("mouse Sensitivty", &mouseSensitivity, 0.01, 3);
-		ImGui::SliderFloat("pitch", &pitch, -360, 360);
-		ImGui::SliderFloat("yaw", &yaw, -360, 360);
-		ImGui::SliderFloat("zoom", &zoom, 0, 25);
-
-
-		ImGui::SliderFloat("Near plane", &nearPlane, 0.01, 100);
-		ImGui::SliderFloat("Far  Plane", &farPlane, 0.01, 100);
-		ImGui::SliderFloat("cam speed", &movementSpeed, 1, 100);
-
+		debugInner();
 
 		ImGui::EndTabItem();
 		//ImGui::TreePop();
 	}
 }
 
+void Camera::debugInner()
+{
+	ImGui::Checkbox("right mouse btn down", &rightMouseDown);
+	ImGui::Checkbox("left mouse btn down", &leftMouseDown);
+	ImGui::SliderFloat3("cam Pos", &position.x, -25, 25);
+	ImGui::SliderFloat3("front", &front.x, -1, 1);
+	ImGui::SliderFloat3("up", &up.x, -1, 1);
+	ImGui::SliderFloat3("right", &right.x, -1, 1);
+	ImGui::SliderFloat("zoom", &zoom, 0, 25);
+	ImGui::SliderFloat("Near plane", &nearPlane, 0.01, 100);
+	ImGui::SliderFloat("Far  Plane", &farPlane, 0.01, 100);
+}
+
 void Camera::updateCamVectors()
 {
-	glm::vec3 _front;
 
-	_front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	_front.y = sin(glm::radians(pitch));
-	_front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front = glm::normalize(_front);
-	// also re-calculate the Right and Up vector
-
-	glm::vec3 WORLD_UP = glm::vec3(0, 1, 0);
-	right = glm::normalize(glm::cross(front, WORLD_UP));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	up = glm::normalize(glm::cross(right, front));
-
-	////to-do, check that this is consistent w/ a moving cam
-	screenCenter += right.x;
-	screenCenter.y += up.y;
 }

@@ -5,7 +5,7 @@
 class TemplateScene : public Scene
 {
 public:
-	TemplateScene()
+	TemplateScene() : Scene()
 	{
 
 	}
