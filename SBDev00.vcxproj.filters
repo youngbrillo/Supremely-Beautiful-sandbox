@@ -154,7 +154,7 @@
       <Filter>Scenes\primative Scenes</Filter>
     </ClCompile>
     <ClCompile Include="FPSCam.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Cameras</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

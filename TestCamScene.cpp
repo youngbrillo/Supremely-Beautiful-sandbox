@@ -5,6 +5,8 @@
 
 #include "Model.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 class TestCamScene : public Scene
 {
 private:
@@ -17,10 +19,15 @@ private:
 	bool showMouse = true;
 	float _cameraSpeed = 2.5;
 	Model* m_Model;
+
+	bool linesEnabled = false, cullface = false;
+	bool rotateModel, rotateLight;
+
 public:
 	TestCamScene() 
 		: Scene()
 		, forward(false), backward(false), left(false), right(false)
+		, rotateModel(false), rotateLight(false)
 		
 	{
 		m_cam = FPSCam(glm::vec3(0, 0, 16.5f));
@@ -50,17 +57,17 @@ public:
 			glm::vec3(1.5f,  0.2f, -1.5f),
 			glm::vec3(-1.3f,  1.0f, -1.5f)
 		};
-		for (int i = 0; i < 10; i++)
-		{
-			def.textureReference = ResourceManager::GetTexture("icon");
-			def.T.position = cubePositions[i];
-			def.T.rotation = 20.0f * i;
-			def.T.UpdateMatrix();
-			if(i == 0)
-				objs.emplace_back(new GameObject(&def, new Callback(RotateAroundPointWrapper, this)));
-			else 
-				objs.emplace_back(new GameObject(&def));
-		}
+		//for (int i = 0; i < 10; i++)
+		//{
+		//	def.textureReference = ResourceManager::GetTexture("icon");
+		//	def.T.position = cubePositions[i];
+		//	def.T.rotation = 20.0f * i;
+		//	def.T.UpdateMatrix();
+		//	if(i == 0)
+		//		objs.emplace_back(new GameObject(&def, new Callback(RotateAroundPointWrapper, this)));
+		//	else 
+		//		objs.emplace_back(new GameObject(&def));
+		//}
 
 		m_surface = new cubeSurface(); m_surface->Generate();
 
@@ -74,7 +81,11 @@ public:
 		m_cam.lastX = ScreenWidth / 2.0f; m_cam.lastY = ScreenHeight / 2.0f;
 		m_cam.Swidth = ScreenWidth;
 		m_cam.Sheight = ScreenHeight;
-
+		m_cam.Position = glm::vec3(-1, 2, 16.5);
+		m_cam.fov = 12.0f;
+		m_cam.Front = glm::vec3(0, -0.07, -1);
+		m_cam.yaw = -90.0f;
+		m_cam.pitch = -4.1f;
 
 
 
@@ -114,9 +125,28 @@ public:
 public: //frame updates
 	virtual void Update(float deltaTime)
 	{
+		if (rotateLight)
+		{
+			lightSourceObj->transform.rotation += deltaTime;
+			lightSourceObj->transform.UpdateMatrix();
+		}
+
+		if (rotateModel)
+		{
+			m_Model->transform.rotation += deltaTime;
+			if (m_Model->transform.rotation > 2* M_PI) m_Model->transform.rotation = 0.0f;
+			m_Model->transform.UpdateMatrix();
+		}
+
+
+
 		lightSourceObj->Update(deltaTime);
 		for(auto m_object:objs) m_object->Update(deltaTime);
 		m_cam.Update(deltaTime);
+
+
+
+
 	}
 	virtual void FixedUpdate(float deltaTime)
 	{
@@ -139,6 +169,27 @@ public: //handle Inputs
 				glfwSetInputMode(App::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			else
 				glfwSetInputMode(App::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+		}
+
+
+		if (key == GLFW_KEY_1)
+		{
+			linesEnabled = !linesEnabled;
+			if (linesEnabled)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+
+		if (key == GLFW_KEY_2)
+		{
+			cullface = !cullface;
+			if (cullface)
+				glEnable(GL_CULL_FACE);
+			else
+				glDisable(GL_CULL_FACE);
 
 		}
 
@@ -205,12 +256,18 @@ public: //rendering
 	{
 
 	};
-	float ambientLightStrength = .70f, specularStrength = 0.5f;
+	float ambientLightStrength = .50f, specularStrength = 0.5f;
 	virtual void DrawDebug() override
 	{
+		ImGui::Checkbox("Rotate Light", &rotateLight);
+		ImGui::Checkbox("Rotate Model", &rotateModel);
+
+
 		if (ImGui::Button("Hot reload model shader")) { delete model_shader; model_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model01_light.frag"); }
 		if (ImGui::Button("Hot reload k shader")) { delete k_shader; k_shader = new Shader("./Shaders/MVP.vert", "./Shaders/SimpleColor2.frag"); }
 		if (ImGui::Button("Hot reload m shader")) { delete m_shader; m_shader = new Shader("./Shaders/MVP.vert", "./Shaders/SimpleColor.frag"); }
+
+
 		ImGui::SliderFloat("ambient light factor", &ambientLightStrength, 0, 1.0f);
 		ImGui::SliderFloat("specular factor", &specularStrength, 0,1.0f);
 
