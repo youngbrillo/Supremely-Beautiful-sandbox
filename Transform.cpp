@@ -54,7 +54,8 @@ void Transform::Debug(const char* owner)
 {
 	if (ImGui::TreeNode(owner))
 	{
-		if (ImGui::SliderFloat3("pos", &position.x, -App::MainCamera->Width, App::MainCamera->Width)) { UpdateMatrix(); }
+		
+		if (ImGui::SliderFloat3("pos", &position.x,-50, 50)) { UpdateMatrix(); }
 		if (ImGui::SliderFloat3("pivot", &pivot.x, -0.5, 0.5)) {
 
 			position += pivot;

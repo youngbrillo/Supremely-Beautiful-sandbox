@@ -285,12 +285,14 @@
     <None Include="Shaders\Model00.frag">
       <Filter>Shaders\Models</Filter>
     </None>
-    <None Include="assets\models\Michelle.fbx" />
     <None Include="assets\models\spider.mtl">
       <Filter>Assets</Filter>
     </None>
     <None Include="Shaders\SimpleColor2.frag">
       <Filter>Shaders\Basic</Filter>
+    </None>
+    <None Include="Shaders\Model01_light.frag">
+      <Filter>Shaders\Models</Filter>
     </None>
   </ItemGroup>
 </Project>

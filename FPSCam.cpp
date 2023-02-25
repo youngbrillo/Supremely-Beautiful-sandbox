@@ -1,7 +1,8 @@
 #include "FPSCam.h"
 #include <imgui.h>
-FPSCam::FPSCam()
-	: Position(0.0f, 0.0f, 3.0f)
+FPSCam::FPSCam(glm::vec3 startingPosition)
+	: Position(startingPosition)
+	, SPos(startingPosition)
 	, Front(0.0f, 0.0f, -1.0f)
 	, Up(0.0f, 1.0f, 0.0f)
 	, firstMouse(true)
@@ -24,7 +25,7 @@ FPSCam::~FPSCam()
 
 void FPSCam::reset()
 {
-	Position = glm::vec3(0.0f, 0.0f, 3.0f);
+	Position = SPos;
 	Front = glm::vec3(0.0f, 0.0f, -1.0f);
 	Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -95,6 +96,11 @@ void FPSCam::CaptureMouseMovement(float xPos, float yPos)
 void FPSCam::ChangeZoom(float offset)
 {
 	fov -= offset;
+
+	if (fov < 1.0f)
+		fov = 1.0f;
+	if (fov > 45.0f)
+		fov = 45.0f;
 }
 
 void FPSCam::HandleKey(int key, bool isDown)
@@ -103,6 +109,12 @@ void FPSCam::HandleKey(int key, bool isDown)
 	if (key == GLFW_KEY_S) mBack = isDown;
 	if (key == GLFW_KEY_A) mLeft = isDown;
 	if (key == GLFW_KEY_D) mRight = isDown;
+	if (key == GLFW_KEY_UP) mUp = isDown;
+	if (key == GLFW_KEY_DOWN) mDown = isDown;
+	if (key == GLFW_KEY_RIGHT_SHIFT) rshiftdown = isDown;
+	if (key == GLFW_KEY_LEFT_SHIFT) lshiftdown = isDown;
+
+
 }
 
 void FPSCam::Update(float dt)
@@ -122,15 +134,29 @@ void FPSCam::MoveCam(float dt)
 		Position -= glm::normalize(glm::cross(Front,Up)) * cameraSpeed;
 	if (mRight)
 		Position += glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
+	if (mUp)
+		Position += cameraSpeed * Up; 
+	if (mDown)
+		Position -= cameraSpeed * Up;
 }
 
 void FPSCam::Debug(const char* name)
 {
 	if (ImGui::TreeNode(name))
 	{
+		ImGui::Checkbox("front", &mFwd);
+		ImGui::Checkbox("bac", &mBack);
+		ImGui::Checkbox("up", &mUp);
+		ImGui::Checkbox("down", &mDown);
+		ImGui::Checkbox("lef", &mLeft);
+		ImGui::Checkbox("rig", &mRight);
+		ImGui::Checkbox("lshif", &lshiftdown);
+		ImGui::Checkbox("rshif", &rshiftdown);
+
+
 
 		ImGui::Checkbox("Orthographic", &isOrtho);
-		ImGui::SliderFloat("nearPlane", &camSpeed, 0, 30.f);
+		ImGui::SliderFloat("camera speed", &camSpeed, 0, 30.f);
 
 		ImGui::Checkbox("enable movement", &movementEnabled);
 

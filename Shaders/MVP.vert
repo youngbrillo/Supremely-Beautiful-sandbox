@@ -8,9 +8,14 @@ uniform mat4 view;
 uniform mat4 projection;
 
 out vec2 TextureCoord;
+out vec3 Normal;
+out vec3 FragPos;
+
 
 void main()
 {
 	gl_Position = projection * view *  model * vec4(vertbufferPos, 1.0);
 	TextureCoord = vertbufferTexCoord;
+	FragPos = vec3(model * vec4(vertbufferPos, 1.0));
+	Normal = vertbufferNormals;
 }

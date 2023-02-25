@@ -207,10 +207,10 @@
     <Image Include="assets\models\SpiderTex.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\models\Michelle.fbx" />
     <None Include="assets\models\spider.mtl" />
     <None Include="Shaders\Model00.frag" />
     <None Include="Shaders\Model00.vert" />
+    <None Include="Shaders\Model01_light.frag" />
     <None Include="Shaders\MVP.vert" />
     <None Include="Shaders\SimpleColor.frag" />
     <None Include="Shaders\SimpleColor2.frag" />

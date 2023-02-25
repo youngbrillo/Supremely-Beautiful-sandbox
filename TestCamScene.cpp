@@ -1,154 +1,41 @@
 #include "Scene.h"
 #include <imgui.h>
 #include "GameObject.h"
+#include "FPSCam.h"
 
-struct t_Cam
-{
-	// camera
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-	bool firstMouse = true, movementEnabled = false, defaultMats = false;
-	float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
-	float pitch = 0.0f;
-	float lastX = 800.0f / 2.0;
-	float lastY = 600.0 / 2.0;
-	float fov = 45.0f;
-	float nearPlane = 0.1f, farPlane = 100.0f;
-
-	float Swidth, Sheight;
-
-	void reset()
-	{
-		cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-		cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-		cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-		firstMouse = true, movementEnabled = false;
-		yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
-		pitch = 0.0f;
-		lastX = Swidth / 2.0;
-		lastY = Sheight / 2.0;
-		fov = 45.0f;
-		nearPlane = 0.1f, farPlane = 100.0f;
-
-	}
-	void Debug()
-	{
-		if (ImGui::TreeNode("t cam"))
-		{
-			
-			ImGui::Checkbox("use default matrix", &defaultMats);
-			ImGui::Checkbox("enable movement", &movementEnabled);
-			if (ImGui::Button("Reset"))reset();
-			ImGui::SliderFloat("nearPlane", &nearPlane, -100, farPlane);
-			ImGui::SliderFloat("farPlane", &farPlane, nearPlane, 100.0f);
-
-			ImGui::SliderFloat("s.dim.x", &Swidth, 0, 0);
-			ImGui::SliderFloat("s.dim.y", &Sheight, 0, 0.0f);
-
-
-			ImGui::SliderFloat3("Pos", &cameraPos.x, -30, 30);
-			ImGui::SliderFloat3("front", &cameraFront.x, -1, 1);
-			ImGui::SliderFloat3("Up", &cameraUp.x, -1, 1);
-
-			ImGui::SliderFloat("Yaw", &yaw, -360, 360);
-			ImGui::SliderFloat("pitch", &pitch, -360, 360); 
-			ImGui::SliderFloat("fov", &fov, -360, 360);
-			ImGui::TreePop();
-		}
-	}
-
-	glm::mat4 getProjection()
-	{
-		float ratio = Swidth / Sheight;
-		if(defaultMats)
-			return glm::ortho(
-				-Swidth * ratio * glm::radians(fov), //left
-				Swidth * ratio * glm::radians(fov), //right
-				-Sheight * ratio * glm::radians(fov), //bottom
-				Sheight * ratio * glm::radians(fov), //top
-				nearPlane,
-				farPlane
-			);
-
-		return glm::perspective(glm::radians(fov), ratio, nearPlane, farPlane);
-	}
-	glm::mat4 getView()
-	{
-		return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	}
-	void CaptureMouseMovement(float xPos, float yPos)
-	{
-		if (movementEnabled)
-		{
-			float xpos = xPos, ypos = yPos;
-			if (firstMouse)
-			{
-				lastX = xpos;
-				lastY = ypos;
-				firstMouse = false;
-			}
-
-			float xoffset = xpos - lastX;
-			float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-			lastX = xpos;
-			lastY = ypos;
-
-			float sensitivity = 0.1f; // change this value to your liking
-			xoffset *= sensitivity;
-			yoffset *= sensitivity;
-
-			yaw += xoffset;
-			pitch += yoffset;
-
-			// make sure that when pitch is out of bounds, screen doesn't get flipped
-			if (pitch > 89.0f)
-				pitch = 89.0f;
-			if (pitch < -89.0f)
-				pitch = -89.0f;
-
-			glm::vec3 front;
-			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-			front.y = sin(glm::radians(pitch));
-			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-			cameraFront = glm::normalize(front);
-		}
-	}
-	void Zoom(float offset)
-	{
-		fov -= offset;
-		//if (fov < 1.0f) fov = 1.0f;
-		//if (fov > 45.0f) fov = 45.0f;
-	}
-};
-
+#include "Model.h"
 
 class TestCamScene : public Scene
 {
 private:
 	std::vector<GameObject*> objs;
-	Shader* ourShader;
-	t_Cam m_cam;
+	GameObject* lightSourceObj;
+	Shader* k_shader, * model_shader;
+	FPSCam m_cam;
 	bool forward, backward, left, right;
 	bool usetestShader = true;
 	bool showMouse = true;
 	float _cameraSpeed = 2.5;
+	Model* m_Model;
 public:
 	TestCamScene() 
 		: Scene()
 		, forward(false), backward(false), left(false), right(false)
 		
 	{
-
+		m_cam = FPSCam(glm::vec3(0, 0, 16.5f));
 		GameObjectDefinition def;
-		def.name = "Unlit Cube";
+		def.name = "Light Source";
 		def.T.pivot = glm::vec3(0.0f);
+		def.T.position = glm::vec3(-5, 0, -5);
 		//def.T.orientation = glm::vec3(0, 1, 0);
 		def.T.orientation = glm::vec3(1.0f, 0.3f, 0.5f);
-		def.ColorMain = glm::vec4(0, 1.0f, 0.8f, 1.0f);
 		def.textureReference = ResourceManager::GetTexture("default");
+		def.ColorMain = glm::vec4(1.0f);
+
+		lightSourceObj = new GameObject(&def);
+		def.ColorMain = glm::vec4(0, 1.0f, 0.8f, 1.0f);
+		def.name = "Unlit Cube";
 
 
 		glm::vec3 cubePositions[] = {
@@ -165,23 +52,39 @@ public:
 		};
 		for (int i = 0; i < 10; i++)
 		{
+			def.textureReference = ResourceManager::GetTexture("icon");
 			def.T.position = cubePositions[i];
 			def.T.rotation = 20.0f * i;
 			def.T.UpdateMatrix();
-
-			objs.emplace_back(new GameObject(&def));
+			if(i == 0)
+				objs.emplace_back(new GameObject(&def, new Callback(RotateAroundPointWrapper, this)));
+			else 
+				objs.emplace_back(new GameObject(&def));
 		}
 
 		m_surface = new cubeSurface(); m_surface->Generate();
 
 
-		ourShader = new Shader("./Shaders/MVP.vert", "./Shaders/SimpleColor2.frag");
-		ourShader->Use().setInt("image", 0);
+		k_shader = new Shader("./Shaders/MVP.vert", "./Shaders/SimpleColor2.frag");
+		k_shader->Use().setInt("image", 0);
+
+		model_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model01_light.frag");
+	
 
 		m_cam.lastX = ScreenWidth / 2.0f; m_cam.lastY = ScreenHeight / 2.0f;
 		m_cam.Swidth = ScreenWidth;
 		m_cam.Sheight = ScreenHeight;
 
+
+
+
+		m_Model = new Model("./assets/models/hero/hero.obj");
+
+		m_Model->transform.pivot = glm::vec3(0.0f, -0.7f, 0.0f);
+		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_Model->transform.position = glm::vec3(-1.0f, 0.0f, 0.0f);
+		m_Model->transform.scale = 0.285f;
+		m_Model->transform.UpdateMatrix();
 	}
 	~TestCamScene()
 	{
@@ -189,25 +92,31 @@ public:
 			delete m_object;
 			m_object = nullptr;
 		}
-		delete ourShader;
+		delete k_shader;
+		delete model_shader;
+		delete lightSourceObj;
+		delete m_Model;
+	}
 
+	static void RotateAroundPointWrapper(TestCamScene* i)
+	{
+		i->RotateAroundPoint();
+	}
+	void RotateAroundPoint()
+	{
+		//GameObject* a, * b;
+		//a = objs[0]; b = objs[1];
+
+		//a->transform.UpdateMatrix();
+		//a->transform.m_model = glm::rota
 	}
 
 public: //frame updates
 	virtual void Update(float deltaTime)
 	{
+		lightSourceObj->Update(deltaTime);
 		for(auto m_object:objs) m_object->Update(deltaTime);
-
-
-		float cameraSpeed = _cameraSpeed * deltaTime;
-		if (forward)
-			m_cam.cameraPos += cameraSpeed * m_cam.cameraFront;
-		if (backward)
-			m_cam.cameraPos -= cameraSpeed * m_cam.cameraFront;
-		if (left)
-			m_cam.cameraPos -= glm::normalize(glm::cross(m_cam.cameraFront, m_cam.cameraUp)) * cameraSpeed;
-		if (right)
-			m_cam.cameraPos += glm::normalize(glm::cross(m_cam.cameraFront, m_cam.cameraUp)) * cameraSpeed;
+		m_cam.Update(deltaTime);
 	}
 	virtual void FixedUpdate(float deltaTime)
 	{
@@ -216,20 +125,11 @@ public: //frame updates
 public: //handle Inputs
 	virtual void onKeyPress(int key)
 	{
-		if (key == GLFW_KEY_W) forward = true;
-		if (key == GLFW_KEY_S) backward = true;
-		if (key == GLFW_KEY_A) left = true;
-		if (key == GLFW_KEY_D) right = true;
+		m_cam.HandleKey(key, true);
 	}
 	virtual void onKeyRelease(int key)
 	{
-		if (key == GLFW_KEY_W) forward = false;
-		if (key == GLFW_KEY_S) backward = false;
-		if (key == GLFW_KEY_A) left = false;
-		if (key == GLFW_KEY_D) right = false;
-
-
-		if (key == GLFW_KEY_TAB) m_cam.movementEnabled = !m_cam.movementEnabled;
+		m_cam.HandleKey(key, false);
 
 		if (key == GLFW_KEY_Q)
 		{
@@ -253,13 +153,12 @@ public: //handle Inputs
 	}
 	virtual void onMouseCursorCallback(double xPos, double yPos)
 	{
-
 		m_cam.CaptureMouseMovement(xPos, yPos);
 	}
 	virtual void onMouseScrollCallback(double xOffset, double yOffset)
 	{
 		if (ImGui::GetIO().WantCaptureMouse) return;
-		m_cam.Zoom(-(float)yOffset);
+		m_cam.ChangeZoom((float)yOffset);
 	}
 	virtual void onWindowResize(int newWidth, int newHeight)
 	{
@@ -274,15 +173,31 @@ public: //rendering
 		// activate shader
 
 		// pass projection matrix to shader (note that in this case it could change every frame)
-		glm::mat4 projection = m_cam.getProjection();
-		glm::mat4 view = m_cam.getView();
-		if(usetestShader)
+		glm::mat4 projection = m_cam.getProjectionMatrix();
+		glm::mat4 view = m_cam.getViewMatrix();
+		//if(usetestShader)
+		k_shader->Use().SetMatrix4("projection", projection).SetMatrix4("view", view)
+			.SetVector4f("lightColor", lightSourceObj->Color)
+			.SetVector3f("lightPosition", lightSourceObj->transform.position)
+			.setFloat("ambientStrength", ambientLightStrength)
+			.setFloat("specularStrength", specularStrength)
+			.SetVector3f("viewPos", m_cam.Position);
+
+		for (auto m_object : objs) m_object->Draw(k_shader, m_surface);
+
+		model_shader->Use().SetMatrix4("projection", projection).SetMatrix4("view", view)
+			.SetVector4f("lightColor", lightSourceObj->Color)
+			.SetVector3f("lightPosition", lightSourceObj->transform.position)
+			.setFloat("ambientStrength", ambientLightStrength)
+			.setFloat("specularStrength", specularStrength)
+			.SetVector3f("viewPos", m_cam.Position);
+
+		m_Model->Draw(model_shader);
+
+
+
 		m_shader->Use().SetMatrix4("projection", projection).SetMatrix4("view", view);
-
-		//Shader* ptr = usetestShader ? ourShader : m_shader; ptr->Use();
-
-		for (auto m_object : objs) m_object->Draw(m_shader, m_surface);
-		//for (auto m_object : objs) m_object->Draw(ptr, m_surface);
+		lightSourceObj->Draw(m_shader, m_surface);
 
 
 	};
@@ -290,11 +205,20 @@ public: //rendering
 	{
 
 	};
+	float ambientLightStrength = .70f, specularStrength = 0.5f;
 	virtual void DrawDebug() override
 	{
+		if (ImGui::Button("Hot reload model shader")) { delete model_shader; model_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model01_light.frag"); }
+		if (ImGui::Button("Hot reload k shader")) { delete k_shader; k_shader = new Shader("./Shaders/MVP.vert", "./Shaders/SimpleColor2.frag"); }
+		if (ImGui::Button("Hot reload m shader")) { delete m_shader; m_shader = new Shader("./Shaders/MVP.vert", "./Shaders/SimpleColor.frag"); }
+		ImGui::SliderFloat("ambient light factor", &ambientLightStrength, 0, 1.0f);
+		ImGui::SliderFloat("specular factor", &specularStrength, 0,1.0f);
+
+		m_Model->Debug();
 		ImGui::Checkbox("use test Shader", &usetestShader);
 		ImGui::SliderFloat("_cameraSpeed", &_cameraSpeed, 0, 30.0f);
 		m_cam.Debug();
+		lightSourceObj->Debug();
 		for (auto m_object : objs) m_object->Debug();
 	}
 
@@ -303,7 +227,7 @@ public:
 };
 
 
-static int testIndex = RegisterScene("Showcase", "Scene B", TestCamScene::Create);
+static int testIndex = RegisterScene("Tests", "light Test", TestCamScene::Create);
 
 
 

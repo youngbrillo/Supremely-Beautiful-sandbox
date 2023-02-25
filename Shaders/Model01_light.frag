@@ -1,14 +1,16 @@
 #version 330 core
 
 out vec4 FragColor;
-in vec2 TextureCoord;
+in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
 
 //object information
 
+
+uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_diffuse2;
 uniform vec4 color;
-uniform sampler2D image;
 
 //light information
 uniform vec4 lightColor;
@@ -22,7 +24,7 @@ uniform vec3 lightPosition;
 
 void main()
 {
-	vec4 objectColor = color* texture(image, TextureCoord);
+	vec4 objectColor = color* texture(texture_diffuse1, TexCoords);
     vec4 ambient = ambientStrength * lightColor;
 
     //light position
