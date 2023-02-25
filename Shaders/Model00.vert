@@ -28,7 +28,7 @@ void main()
     vec4 totalPosition =  vec4(0.0f);
 /*
 */
-
+    bool foundbone = false;
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
         if(boneIds[i] == -1) 
@@ -41,7 +41,14 @@ void main()
         vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(aPos,1.0f);
         totalPosition += localPosition * weights[i];
         vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * aNormal;
+        foundbone = true;
    }
+
+    if(!foundbone) {
+        totalPosition = vec4(aPos,1.0f);
+    }
+
+
     //outputs
     TexCoords = aTexCoords;    
     Normal = aNormal;
