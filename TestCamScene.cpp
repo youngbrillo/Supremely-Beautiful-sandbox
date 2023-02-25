@@ -26,7 +26,7 @@ private:
 	bool linesEnabled = false, cullface = false;
 	bool rotateModel, rotateLight;
 	Animator* m_animator;
-	Animation* walkAnim;
+	Animation* walkAnim, * runAnim, * idleAnim;
 public:
 	TestCamScene() 
 		: Scene()
@@ -94,16 +94,19 @@ public:
 
 
 		//m_Model = new Model("./assets/models/hero/hero.obj");
-		m_Model = new Model("./assets/models/michelle/Walking.dae");
+		m_Model = new Model("./assets/models/michelle/Michelle.dae");
 
 		m_Model->transform.pivot = glm::vec3(0.0f, -0.7f, 0.0f);
+		m_Model->transform.pivot = glm::vec3(0.0f, 0.0f, 0.0f);
 		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f, 0.0f);
 		m_Model->transform.position = glm::vec3(-1.0f, 0.0f, 0.0f);
-		m_Model->transform.scale = 0.285f;
-		m_Model->transform.scale = 0.01f;
+		//m_Model->transform.scale = 0.285f;
+		//m_Model->transform.scale = 0.01f;
 		m_Model->transform.UpdateMatrix();
 
+		idleAnim = new Animation("./assets/models/michelle/Idle.dae", m_Model);
 		walkAnim = new Animation("./assets/models/michelle/Walking.dae", m_Model);
+		runAnim = new Animation("./assets/models/michelle/FastRun.dae", m_Model);
 		m_animator = new Animator(walkAnim);
 	}
 	~TestCamScene()
@@ -279,6 +282,12 @@ public: //rendering
 	{
 		ImGui::Checkbox("Rotate Light", &rotateLight);
 		ImGui::Checkbox("Rotate Model", &rotateModel);
+
+
+		if (ImGui::Button("Idle")) { m_animator->PlayAnimation(idleAnim); }
+		if (ImGui::Button("walk")) { m_animator->PlayAnimation(walkAnim); }
+		if (ImGui::Button("run")) { m_animator->PlayAnimation(runAnim); }
+
 
 
 		if (ImGui::Button("Hot reload model shader")) { delete model_shader; model_shader = new Shader("./Shaders/Model00.vert", "./Shaders/Model01_light.frag"); }
