@@ -55,6 +55,9 @@
     <Filter Include="Shaders\Basic">
       <UniqueIdentifier>{a37bffb9-02a8-4a13-8abd-84f2b7b33db9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawing\animation">
+      <UniqueIdentifier>{f3f3f08f-5c8d-4285-82d8-560112a32d99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -156,6 +159,15 @@
     <ClCompile Include="FPSCam.cpp">
       <Filter>Source Files\Cameras</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Drawing\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Bone.cpp">
+      <Filter>Source Files\Drawing\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Source Files\Drawing\animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -249,6 +261,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FPSCam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="animdata.h">
+      <Filter>Source Files\Drawing\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp_glm_helpers.h">
+      <Filter>Source Files\Drawing\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

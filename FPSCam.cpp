@@ -107,8 +107,8 @@ void FPSCam::HandleKey(int key, bool isDown)
 {
 	if (key == GLFW_KEY_W) mFwd = isDown;
 	if (key == GLFW_KEY_S) mBack = isDown;
-	if (key == GLFW_KEY_A) mLeft = isDown;
-	if (key == GLFW_KEY_D) mRight = isDown;
+	if (key == GLFW_KEY_A || key == GLFW_KEY_LEFT) mLeft = isDown;
+	if (key == GLFW_KEY_D || key == GLFW_KEY_RIGHT) mRight = isDown;
 	if (key == GLFW_KEY_UP) mUp = isDown;
 	if (key == GLFW_KEY_DOWN) mDown = isDown;
 	if (key == GLFW_KEY_RIGHT_SHIFT) rshiftdown = isDown;

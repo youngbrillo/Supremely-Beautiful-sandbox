@@ -7,6 +7,9 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+
+#include "Animator.h"
+
 class TestCamScene : public Scene
 {
 private:
@@ -22,7 +25,8 @@ private:
 
 	bool linesEnabled = false, cullface = false;
 	bool rotateModel, rotateLight;
-
+	Animator* m_animator;
+	Animation* walkAnim;
 public:
 	TestCamScene() 
 		: Scene()
@@ -81,21 +85,26 @@ public:
 		m_cam.lastX = ScreenWidth / 2.0f; m_cam.lastY = ScreenHeight / 2.0f;
 		m_cam.Swidth = ScreenWidth;
 		m_cam.Sheight = ScreenHeight;
-		m_cam.Position = glm::vec3(-1, 2, 16.5);
-		m_cam.fov = 12.0f;
+		m_cam.Position = glm::vec3(-1, 0.5f, 3);
+		m_cam.fov = 45.0f;
 		m_cam.Front = glm::vec3(0, -0.07, -1);
 		m_cam.yaw = -90.0f;
 		m_cam.pitch = -4.1f;
 
 
 
-		m_Model = new Model("./assets/models/hero/hero.obj");
+		//m_Model = new Model("./assets/models/hero/hero.obj");
+		m_Model = new Model("./assets/models/michelle/Walking.dae");
 
 		m_Model->transform.pivot = glm::vec3(0.0f, -0.7f, 0.0f);
 		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f, 0.0f);
 		m_Model->transform.position = glm::vec3(-1.0f, 0.0f, 0.0f);
 		m_Model->transform.scale = 0.285f;
+		m_Model->transform.scale = 0.01f;
 		m_Model->transform.UpdateMatrix();
+
+		walkAnim = new Animation("./assets/models/michelle/Walking.dae", m_Model);
+		m_animator = new Animator(walkAnim);
 	}
 	~TestCamScene()
 	{
@@ -107,6 +116,8 @@ public:
 		delete model_shader;
 		delete lightSourceObj;
 		delete m_Model;
+		delete m_animator;
+		delete walkAnim;
 	}
 
 	static void RotateAroundPointWrapper(TestCamScene* i)
@@ -145,6 +156,7 @@ public: //frame updates
 		m_cam.Update(deltaTime);
 
 
+		m_animator->UpdateAnimator(deltaTime);
 
 
 	}
@@ -243,6 +255,12 @@ public: //rendering
 			.setFloat("specularStrength", specularStrength)
 			.SetVector3f("viewPos", m_cam.Position);
 
+		auto transforms = m_animator->GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); i++)
+		{
+			std::string fbmindex = "finalBonesMatrices[" + std::to_string(i) + "]";
+			model_shader->SetMatrix4(fbmindex.c_str(), transforms[i]);
+		}
 		m_Model->Draw(model_shader);
 
 
@@ -256,7 +274,7 @@ public: //rendering
 	{
 
 	};
-	float ambientLightStrength = .50f, specularStrength = 0.5f;
+	float ambientLightStrength = 1.0f/*.250f*/, specularStrength = 0.5f;
 	virtual void DrawDebug() override
 	{
 		ImGui::Checkbox("Rotate Light", &rotateLight);
@@ -271,7 +289,7 @@ public: //rendering
 		ImGui::SliderFloat("ambient light factor", &ambientLightStrength, 0, 1.0f);
 		ImGui::SliderFloat("specular factor", &specularStrength, 0,1.0f);
 
-		m_Model->Debug();
+		m_Model->Debug("Hero.obj");
 		ImGui::Checkbox("use test Shader", &usetestShader);
 		ImGui::SliderFloat("_cameraSpeed", &_cameraSpeed, 0, 30.0f);
 		m_cam.Debug();

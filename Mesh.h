@@ -3,10 +3,20 @@
 #include <string>
 #include <vector>
 #include "Shader.h"
+
+#define MAX_BONE_INFLUENCE 4
+
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TextureCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
+
+	//bone indexes to influence this vertex
+	int		m_BoneIDs[MAX_BONE_INFLUENCE];
+	//weights from each bone
+	float m_Weights[MAX_BONE_INFLUENCE];
 };
 
 struct vTexture {
