@@ -27,6 +27,7 @@ private:
 	bool rotateModel, rotateLight;
 	Animator* m_animator;
 	Animation* walkAnim, * runAnim, * idleAnim;
+	bool shiftHeldDown = false;
 public:
 	TestCamScene() 
 		: Scene()
@@ -61,17 +62,17 @@ public:
 			glm::vec3(1.5f,  0.2f, -1.5f),
 			glm::vec3(-1.3f,  1.0f, -1.5f)
 		};
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	def.textureReference = ResourceManager::GetTexture("icon");
-		//	def.T.position = cubePositions[i];
-		//	def.T.rotation = 20.0f * i;
-		//	def.T.UpdateMatrix();
-		//	if(i == 0)
-		//		objs.emplace_back(new GameObject(&def, new Callback(RotateAroundPointWrapper, this)));
-		//	else 
-		//		objs.emplace_back(new GameObject(&def));
-		//}
+		for (int i = 0; i < 10; i++)
+		{
+			def.textureReference = ResourceManager::GetTexture("icon");
+			def.T.position = cubePositions[i];
+			def.T.rotation = 20.0f * i;
+			def.T.UpdateMatrix();
+			if(i == 0)
+				objs.emplace_back(new GameObject(&def, new Callback(RotateAroundPointWrapper, this)));
+			else 
+				objs.emplace_back(new GameObject(&def));
+		}
 
 		m_surface = new cubeSurface(); m_surface->Generate();
 
@@ -141,8 +142,17 @@ public: //frame updates
 	{
 		if (rotateLight)
 		{
-			lightSourceObj->transform.rotation += deltaTime;
+			//lightSourceObj->transform.rotation += deltaTime;
+
+			glm::mat4 trans(1.0f);
+			float rotInc = 30.0f * deltaTime;
+			trans = glm::rotate(trans, glm::radians(rotInc), glm::vec3(0.0f, 0.0f, 1.0f));
+			glm::vec4 result = trans * glm::vec4(lightSourceObj->transform.position, 1.0f);
+
+			lightSourceObj->transform.position = glm::vec3(result.x, result.y, result.z);
+
 			lightSourceObj->transform.UpdateMatrix();
+
 		}
 
 		if (rotateModel)
@@ -171,6 +181,7 @@ public: //handle Inputs
 	virtual void onKeyPress(int key)
 	{
 		m_cam.HandleKey(key, true);
+		if (key == GLFW_KEY_LEFT_SHIFT) shiftHeldDown = true;
 	}
 	virtual void onKeyRelease(int key)
 	{
@@ -208,6 +219,9 @@ public: //handle Inputs
 
 		}
 
+		if (key == GLFW_KEY_LEFT_SHIFT) shiftHeldDown = false;
+
+
 	}
 	virtual void onKeyPressContinuous(int key)
 	{
@@ -220,6 +234,11 @@ public: //handle Inputs
 	virtual void onMouseCursorCallback(double xPos, double yPos)
 	{
 		m_cam.CaptureMouseMovement(xPos, yPos);
+
+		if (shiftHeldDown)
+		{
+			m_cam
+		}
 	}
 	virtual void onMouseScrollCallback(double xOffset, double yOffset)
 	{
