@@ -28,6 +28,7 @@ private:
 	Animator* m_animator;
 	Animation* walkAnim, * runAnim, * idleAnim;
 	bool shiftHeldDown = false;
+	glm::vec3 rotationPoint = glm::vec3(0, 0, 1.0f);
 public:
 	TestCamScene() 
 		: Scene()
@@ -146,7 +147,7 @@ public: //frame updates
 
 			glm::mat4 trans(1.0f);
 			float rotInc = 30.0f * deltaTime;
-			trans = glm::rotate(trans, glm::radians(rotInc), glm::vec3(0.0f, 0.0f, 1.0f));
+			trans = glm::rotate(trans, glm::radians(rotInc), rotationPoint);
 			glm::vec4 result = trans * glm::vec4(lightSourceObj->transform.position, 1.0f);
 
 			lightSourceObj->transform.position = glm::vec3(result.x, result.y, result.z);
@@ -237,7 +238,7 @@ public: //handle Inputs
 
 		if (shiftHeldDown)
 		{
-			m_cam
+			
 		}
 	}
 	virtual void onMouseScrollCallback(double xOffset, double yOffset)
@@ -301,7 +302,8 @@ public: //rendering
 	{
 		ImGui::Checkbox("Rotate Light", &rotateLight);
 		ImGui::Checkbox("Rotate Model", &rotateModel);
-
+		
+		ImGui::SliderFloat3("lite.rot.point", &rotationPoint.x, -10, 10.0f);
 
 		if (ImGui::Button("Idle")) { m_animator->PlayAnimation(idleAnim); }
 		if (ImGui::Button("walk")) { m_animator->PlayAnimation(walkAnim); }

@@ -28,6 +28,7 @@ void main()
     //light position
     
     vec3 norm = normalize(Normal);
+	//vec4 objectColor = vec4(norm.xyz, 1.0f) * texture(image, TextureCoord);
     vec3 lightDir = normalize(lightPosition - FragPos);  
 
     
