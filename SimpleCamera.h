@@ -2,15 +2,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "BasicCameraInterface.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <GLFW/glfw3.h>
-//#include "CameraController.h"
-
-class Camera
+class Camera : public BasicCameraInterface
 {
 public:
 	Camera(glm::vec4 viewPort);
@@ -22,6 +16,7 @@ public:
 	virtual void mouseCallback(GLFWwindow* window, int button, int action, int mode);
 	virtual void mouseCallback_Cursor(GLFWwindow* w, double x, double y);
 	virtual void mouseScroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+	virtual void HandleKey(int key, bool isDown) {};
 
 	void debug();
 	void Update(float dt) { onUpdate(dt); };

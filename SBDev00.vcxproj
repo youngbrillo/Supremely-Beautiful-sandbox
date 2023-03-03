@@ -142,6 +142,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="FileData.cpp" />
     <ClCompile Include="FileIOoperations.cpp" />
+    <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="FPSCam.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObject_UI.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="FileData.h" />
     <ClInclude Include="FileIOoperations.h" />
+    <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="FPSCam.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObject_UI.h" />
