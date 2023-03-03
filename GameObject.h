@@ -5,6 +5,9 @@
 #include "Texture.h"
 #include <string>
 #include "Callback.h"
+#include "SBMesh.h"
+
+
 struct GameObjectDefinition
 {
 	Transform T;
@@ -39,6 +42,7 @@ public: //member functions
 	virtual void FixedUpdate(float dt);
 	virtual void Update(float dt);
 	virtual void Draw(Shader* _shader, Surface* _surface);
+	virtual void Draw(Shader* _shader, SB::SBMesh* mesh);
 	void Debug();
 protected:
 	virtual void DebugData();

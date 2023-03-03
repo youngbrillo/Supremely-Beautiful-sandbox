@@ -4,6 +4,8 @@ out vec4 FragColor;
 in vec2 TextureCoord;
 in vec3 Normal;
 in vec3 FragPos;
+in mat4 mmvp;
+
 
 //object information
 
@@ -22,13 +24,18 @@ uniform vec3 lightPosition;
 
 void main()
 {
-	vec4 objectColor = color* texture(image, TextureCoord);
+	vec4 objectColor = color;//* texture(image, TextureCoord);
     vec4 ambient = ambientStrength * lightColor;
 
     //light position
     
     vec3 norm = normalize(Normal);
+    vec3 norm1 = normalize(Normal);
 	//vec4 objectColor = vec4(norm.xyz, 1.0f) * texture(image, TextureCoord);
+    norm1 = mat3(mmvp) * Normal;
+    norm = norm1;
+
+	//vec4 objectColor = vec4(norm1.xyz, 1.0f);
     vec3 lightDir = normalize(lightPosition - FragPos);  
 
     

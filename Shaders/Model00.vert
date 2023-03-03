@@ -19,15 +19,15 @@ uniform mat4 finalBonesMatrices[MAX_BONES];
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
-
+out mat4 nMat;
 
 void main()
 {
 
    // vec4 totalPosition =  vec4(aPos,1.0f);
     vec4 totalPosition =  vec4(0.0f);
+    totalPosition =  vec4(aPos,1.0f);
 /*
-*/
     bool foundbone = false;
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
@@ -47,6 +47,7 @@ void main()
     if(!foundbone) {
         totalPosition = vec4(aPos,1.0f);
     }
+*/
 
 
     //outputs

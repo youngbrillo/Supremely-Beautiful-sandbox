@@ -58,6 +58,12 @@
     <Filter Include="Source Files\Drawing\animation">
       <UniqueIdentifier>{f3f3f08f-5c8d-4285-82d8-560112a32d99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawing\Meshes">
+      <UniqueIdentifier>{02c52731-0782-4d64-899c-d448c8d68d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawing\SBMeshes">
+      <UniqueIdentifier>{6f9872f0-3472-4572-be76-6600de7caa90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -117,9 +123,6 @@
     <ClCompile Include="SimpleCamera.cpp">
       <Filter>Source Files\Cameras</Filter>
     </ClCompile>
-    <ClCompile Include="Surface.cpp">
-      <Filter>Source Files\Drawing</Filter>
-    </ClCompile>
     <ClCompile Include="TextRenderer.cpp">
       <Filter>Source Files\Drawing</Filter>
     </ClCompile>
@@ -128,12 +131,6 @@
     </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="surface2.cpp">
-      <Filter>Source Files\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="TemplateScene.cpp">
       <Filter>Scenes\Templates</Filter>
@@ -146,9 +143,6 @@
     </ClCompile>
     <ClCompile Include="PerspectiveCamera.cpp">
       <Filter>Source Files\Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source Files\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="PerspectiveCameraScene.cpp">
       <Filter>Scenes\primative Scenes</Filter>
@@ -167,6 +161,39 @@
     </ClCompile>
     <ClCompile Include="Animator.cpp">
       <Filter>Source Files\Drawing\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="LightTestScene00.cpp">
+      <Filter>Scenes\primative Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Drawing\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Source Files\Drawing\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="surface2.cpp">
+      <Filter>Source Files\Drawing\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Drawing\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="SBMesh.cpp">
+      <Filter>Source Files\Drawing\SBMeshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Quad.cpp">
+      <Filter>Source Files\Drawing\SBMeshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source Files\Drawing\SBMeshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Source Files\Drawing\SBMeshes</Filter>
+    </ClCompile>
+    <ClCompile Include="LineStrip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicCameraInterface.cpp">
+      <Filter>Source Files\Cameras</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +304,24 @@
     </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SBMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Quad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineStrip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicCameraInterface.h">
+      <Filter>Source Files\Cameras</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

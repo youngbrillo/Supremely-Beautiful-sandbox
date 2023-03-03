@@ -10,6 +10,10 @@
 
 #include "Animator.h"
 
+#include "Quad.h"
+#include "Sphere.h"
+#include "Cube.h"
+
 class TestCamScene : public Scene
 {
 private:
@@ -21,7 +25,7 @@ private:
 	bool usetestShader = true;
 	bool showMouse = true;
 	float _cameraSpeed = 2.5;
-	Model* m_Model;
+	Model* m_Model, *n_Model, *o_Model;
 
 	bool linesEnabled = false, cullface = false;
 	bool rotateModel, rotateLight;
@@ -29,6 +33,8 @@ private:
 	Animation* walkAnim, * runAnim, * idleAnim;
 	bool shiftHeldDown = false;
 	glm::vec3 rotationPoint = glm::vec3(0, 0, 1.0f);
+
+	SB::SBMesh* m_mesh, *k_mesh;
 public:
 	TestCamScene() 
 		: Scene()
@@ -87,7 +93,7 @@ public:
 		m_cam.lastX = ScreenWidth / 2.0f; m_cam.lastY = ScreenHeight / 2.0f;
 		m_cam.Swidth = ScreenWidth;
 		m_cam.Sheight = ScreenHeight;
-		m_cam.Position = glm::vec3(-1, 0.5f, 3);
+		m_cam.Position = glm::vec3(1.75f, 5.0f, 11.5f);
 		m_cam.fov = 45.0f;
 		m_cam.Front = glm::vec3(0, -0.07, -1);
 		m_cam.yaw = -90.0f;
@@ -101,7 +107,8 @@ public:
 		m_Model->transform.pivot = glm::vec3(0.0f, -0.7f, 0.0f);
 		m_Model->transform.pivot = glm::vec3(0.0f, 0.0f, 0.0f);
 		m_Model->transform.orientation = glm::vec3(0.0f, 1.0f, 0.0f);
-		m_Model->transform.position = glm::vec3(-1.0f, 0.0f, 0.0f);
+		m_Model->transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+		m_Model->transform.scale = 0.027f;
 		//m_Model->transform.scale = 0.285f;
 		//m_Model->transform.scale = 0.01f;
 		m_Model->transform.UpdateMatrix();
@@ -109,7 +116,21 @@ public:
 		idleAnim = new Animation("./assets/models/michelle/Idle.dae", m_Model);
 		walkAnim = new Animation("./assets/models/michelle/Walking.dae", m_Model);
 		runAnim = new Animation("./assets/models/michelle/FastRun.dae", m_Model);
-		m_animator = new Animator(walkAnim);
+		//m_animator = new Animator(walkAnim);
+
+
+		n_Model = new Model("./assets/models/hero/hero.obj");
+		n_Model->transform.position = glm::vec3(-3.0f, 0.0f, 0.0f);
+		n_Model->transform.scale = 1.0f;
+		n_Model->transform.UpdateMatrix();
+
+		o_Model = new Model("./assets/models/Pine/Pine.dae");
+		o_Model->transform.position = glm::vec3(3.0f, 0.0f, 0.0f);
+		o_Model->transform.scale = 0.250f;
+		o_Model->transform.UpdateMatrix();
+
+		m_mesh = new SB::Sphere(12, 12);
+		k_mesh = new SB::Cube();
 	}
 	~TestCamScene()
 	{
@@ -121,7 +142,9 @@ public:
 		delete model_shader;
 		delete lightSourceObj;
 		delete m_Model;
-		delete m_animator;
+		delete n_Model;
+		delete o_Model;
+		//delete m_animator;
 		delete walkAnim;
 	}
 
@@ -170,7 +193,7 @@ public: //frame updates
 		m_cam.Update(deltaTime);
 
 
-		m_animator->UpdateAnimator(deltaTime);
+		//m_animator->UpdateAnimator(deltaTime);
 
 
 	}
@@ -270,6 +293,12 @@ public: //rendering
 			.SetVector3f("viewPos", m_cam.Position);
 
 		for (auto m_object : objs) m_object->Draw(k_shader, m_surface);
+		for (int i = 0; i < objs.size(); i++)
+		{
+			SB::SBMesh* n = i < objs.size() / 2 ? m_mesh : k_mesh;
+
+			objs[i]->Draw(k_shader, n);
+		}
 
 		model_shader->Use().SetMatrix4("projection", projection).SetMatrix4("view", view)
 			.SetVector4f("lightColor", lightSourceObj->Color)
@@ -278,14 +307,16 @@ public: //rendering
 			.setFloat("specularStrength", specularStrength)
 			.SetVector3f("viewPos", m_cam.Position);
 
-		auto transforms = m_animator->GetFinalBoneMatrices();
-		for (int i = 0; i < transforms.size(); i++)
-		{
-			std::string fbmindex = "finalBonesMatrices[" + std::to_string(i) + "]";
-			model_shader->SetMatrix4(fbmindex.c_str(), transforms[i]);
-		}
-		m_Model->Draw(model_shader);
 
+		n_Model->Draw(model_shader);
+		o_Model->Draw(model_shader);
+		//auto transforms = m_animator->GetFinalBoneMatrices();
+		//for (int i = 0; i < transforms.size(); i++)
+		//{
+		//	std::string fbmindex = "finalBonesMatrices[" + std::to_string(i) + "]";
+		//	model_shader->SetMatrix4(fbmindex.c_str(), transforms[i]);
+		//}
+		m_Model->Draw(model_shader);
 
 
 		m_shader->Use().SetMatrix4("projection", projection).SetMatrix4("view", view);
@@ -305,9 +336,9 @@ public: //rendering
 		
 		ImGui::SliderFloat3("lite.rot.point", &rotationPoint.x, -10, 10.0f);
 
-		if (ImGui::Button("Idle")) { m_animator->PlayAnimation(idleAnim); }
-		if (ImGui::Button("walk")) { m_animator->PlayAnimation(walkAnim); }
-		if (ImGui::Button("run")) { m_animator->PlayAnimation(runAnim); }
+		//if (ImGui::Button("Idle")) { m_animator->PlayAnimation(idleAnim); }
+		//if (ImGui::Button("walk")) { m_animator->PlayAnimation(walkAnim); }
+		//if (ImGui::Button("run")) { m_animator->PlayAnimation(runAnim); }
 
 
 
@@ -319,7 +350,9 @@ public: //rendering
 		ImGui::SliderFloat("ambient light factor", &ambientLightStrength, 0, 1.0f);
 		ImGui::SliderFloat("specular factor", &specularStrength, 0,1.0f);
 
-		m_Model->Debug("Hero.obj");
+		m_Model->Debug("Michelle.dae");
+		n_Model->Debug("Hero.obj");
+		o_Model->Debug("Pine.dae");
 		ImGui::Checkbox("use test Shader", &usetestShader);
 		ImGui::SliderFloat("_cameraSpeed", &_cameraSpeed, 0, 30.0f);
 		m_cam.Debug();

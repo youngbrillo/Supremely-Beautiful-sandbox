@@ -68,6 +68,18 @@ void GameObject::Draw(Shader* _shader, Surface* _surface)
 	_surface->Bind();
 }
 
+void GameObject::Draw(Shader* _shader, SB::SBMesh* mesh)
+{
+	if (!visible) return;
+	_shader->Use()
+		.SetMatrix4("model", transform.m_model)
+		.SetColor("color", drawColor);
+
+	if (texture) texture->Bind();
+
+	mesh->Draw();
+}
+
 void GameObject::Debug()
 {
 
